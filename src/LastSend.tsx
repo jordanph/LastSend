@@ -1,6 +1,5 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import Submit from "./Submit";
-import BN from "bn.js";
 import { Typography, Divider } from "@material-ui/core";
 
 const currentWinnerABI = {
@@ -51,7 +50,7 @@ const endedABI = {
   signature: "0x12fa6feb"
 };
 
-const account = "0x2008795b014eA4931AfFa3357461B2696f1d1B64";
+const account = "0xf8dB240A39D50bd37cDd8EdB9B65FeaaB7d6e428";
 
 interface LastSendProps {
   currentBlock: number;

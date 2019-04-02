@@ -1,6 +1,7 @@
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import React, { FunctionComponent, useState } from "react";
+import BigNumber from "bignumber.js";
 
 const sendABI = {
   constant: false,
@@ -13,7 +14,13 @@ const sendABI = {
   signature: "0xb46300ec"
 };
 
-const account = "0x2008795b014eA4931AfFa3357461B2696f1d1B64";
+const account = "0xf8dB240A39D50bd37cDd8EdB9B65FeaaB7d6e428";
+const tenVET =
+  "0x" +
+  new BigNumber(10)
+    .multipliedBy(1e18)
+    .dp(0)
+    .toString(16);
 
 const rootStyle = {
   alignItems: "center"
@@ -49,11 +56,12 @@ const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
     const sendClause = connex.thor
       .account(account)
       .method(sendABI)
-      .value("1000000000000000000")
+      .value(tenVET)
       .asClause();
 
-    await signingService.request([{ ...sendClause }]);
-
+    try {
+      await signingService.request([{ ...sendClause }]);
+    } catch {}
     setLoading(false);
   };
 
