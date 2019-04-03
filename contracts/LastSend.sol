@@ -4,16 +4,13 @@ contract LastSend {
   address payable public lastSender;
   uint public expiryBlockNumber;
   bool public claimed;
+  uint public finalBalance;
 
   event LastSenderUpdated(address lastSender, uint expiryBlockNumber, uint bounty);
 
   constructor() public {
-    expiryBlockNumber = block.number + 5000;
+    expiryBlockNumber = block.number + 50;
     claimed = false;
-  }
-
-  function blockNumber() public view returns (uint) {
-    block.number;
   }
 
   function send() public payable {
@@ -21,13 +18,9 @@ contract LastSend {
     require(expiryBlockNumber > block.number, "Send game has ended.");
 
     lastSender = msg.sender;
-    expiryBlockNumber = block.number + 5000;
+    expiryBlockNumber = block.number + 50;
 
     emit LastSenderUpdated(lastSender, expiryBlockNumber, address(this).balance);
-  }
-
-  function ended() public view returns (bool) {
-    expiryBlockNumber <= block.number;
   }
 
   function withdraw() public {
@@ -36,6 +29,7 @@ contract LastSend {
     require(claimed == false, "You already claimed your winnings.");
 
     claimed = true;
+    finalBalance = address(this).balance;
     lastSender.transfer(address(this).balance);
   }
 }

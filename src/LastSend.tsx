@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FunctionComponent } from "react";
 import Submit from "./Submit";
 import { Typography, Divider } from "@material-ui/core";
+import Withdraw from "./Withdraw";
 
 const currentWinnerABI = {
   constant: true,
@@ -16,6 +17,22 @@ const currentWinnerABI = {
   stateMutability: "view",
   type: "function",
   signature: "0x256fec88"
+};
+
+const claimedABI = {
+  constant: true,
+  inputs: [],
+  name: "claimed",
+  outputs: [
+    {
+      name: "",
+      type: "bool"
+    }
+  ],
+  payable: false,
+  stateMutability: "view",
+  type: "function",
+  signature: "0xe834a834"
 };
 
 const expiryBlockNumberABI = {
@@ -34,23 +51,7 @@ const expiryBlockNumberABI = {
   signature: "0xc9f89ea5"
 };
 
-const endedABI = {
-  constant: true,
-  inputs: [],
-  name: "ended",
-  outputs: [
-    {
-      name: "",
-      type: "bool"
-    }
-  ],
-  payable: false,
-  stateMutability: "view",
-  type: "function",
-  signature: "0x12fa6feb"
-};
-
-const account = "0xf8dB240A39D50bd37cDd8EdB9B65FeaaB7d6e428";
+const account = process.env.REACT_APP_CONTRACT_ADDRESS!;
 
 interface LastSendProps {
   currentBlock: number;
@@ -62,6 +63,7 @@ interface CurrentDetails {
   ended: boolean;
   balance: number;
   isCurrentWinner: boolean;
+  claimed: boolean;
 }
 
 const LastSend: FunctionComponent<LastSendProps> = ({ currentBlock }) => {
@@ -77,9 +79,9 @@ const LastSend: FunctionComponent<LastSendProps> = ({ currentBlock }) => {
         .account(account)
         .method(expiryBlockNumberABI)
         .call();
-      const ended = await connex.thor
+      const claimed = await connex.thor
         .account(account)
-        .method(endedABI)
+        .method(claimedABI)
         .call();
       const balance = await connex.thor.account(account).get();
       const currentWinnerAddress = currentWinner.decoded!["0"]!;
@@ -87,9 +89,10 @@ const LastSend: FunctionComponent<LastSendProps> = ({ currentBlock }) => {
       setCurrentDetails({
         currentWinner: currentWinnerAddress,
         expiryBlock: parseInt(expiryBlock.data, 16),
-        ended: parseInt(ended.data, 16) == 1,
+        ended: expiryBlock.decoded!["0"]! <= currentBlock,
         balance: parseInt(balance.balance, 16) / 1000000000000000000,
-        isCurrentWinner: connex.vendor.owned(currentWinnerAddress)
+        isCurrentWinner: connex.vendor.owned(currentWinnerAddress),
+        claimed: claimed.decoded!["0"]!
       });
     };
 
@@ -138,7 +141,14 @@ const LastSend: FunctionComponent<LastSendProps> = ({ currentBlock }) => {
               )}
               <br />
               <Divider variant="middle" />
-              {currentDetails.isCurrentWinner && <button>Withdraw</button>}
+              {currentDetails.isCurrentWinner && !currentDetails.claimed && (
+                <Withdraw />
+              )}
+              {currentDetails.isCurrentWinner && currentDetails.claimed && (
+                <Typography variant="subtitle1" gutterBottom>
+                  Thank you for withdrawing your winnings :)
+                </Typography>
+              )}
             </div>
           )}
         </div>

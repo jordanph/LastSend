@@ -1,27 +1,19 @@
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import React, { FunctionComponent, useState } from "react";
-import BigNumber from "bignumber.js";
+import React, { useState } from "react";
 
-const sendABI = {
+const withdrawABI = {
   constant: false,
   inputs: [],
-  name: "send",
+  name: "withdraw",
   outputs: [],
-  payable: true,
-  stateMutability: "payable",
+  payable: false,
+  stateMutability: "nonpayable",
   type: "function",
-  signature: "0xb46300ec"
+  signature: "0x3ccfd60b"
 };
 
 const account = process.env.REACT_APP_CONTRACT_ADDRESS!;
-
-const tenVET =
-  "0x" +
-  new BigNumber(10)
-    .multipliedBy(1e18)
-    .dp(0)
-    .toString(16);
 
 const rootStyle = {
   alignItems: "center"
@@ -40,14 +32,9 @@ const progressStyle = {
   top: "50%"
 } as React.CSSProperties;
 
-interface SubmitButtonProps {
-  currentlyWinning: boolean;
-}
-
-const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
-  currentlyWinning
-}) => {
+const WithdrawButton = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>();
 
   const onClick = async () => {
     setLoading(true);
@@ -56,12 +43,12 @@ const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
 
     const sendClause = connex.thor
       .account(account)
-      .method(sendABI)
-      .value(tenVET)
+      .method(withdrawABI)
       .asClause();
 
     try {
       await signingService.request([{ ...sendClause }]);
+      setSuccess(true);
     } catch {}
     setLoading(false);
   };
@@ -72,11 +59,11 @@ const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
         <Button
           variant="contained"
           color="primary"
-          disabled={loading}
+          disabled={loading || success}
           onClick={onClick}
           size="large"
         >
-          Send {currentlyWinning && "(More)"} VET
+          Withdraw Winnings
         </Button>
         {loading && <CircularProgress size={24} style={progressStyle} />}
       </div>
@@ -84,4 +71,4 @@ const SubmitButton: FunctionComponent<SubmitButtonProps> = ({
   );
 };
 
-export default SubmitButton;
+export default WithdrawButton;
