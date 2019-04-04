@@ -9,7 +9,7 @@ contract LastSend {
   event LastSenderUpdated(address lastSender, uint expiryBlockNumber, uint bounty);
 
   constructor() public {
-    expiryBlockNumber = block.number + 50;
+    expiryBlockNumber = block.number + 5000;
     claimed = false;
   }
 
@@ -18,7 +18,7 @@ contract LastSend {
     require(expiryBlockNumber > block.number, "Send game has ended.");
 
     lastSender = msg.sender;
-    expiryBlockNumber = block.number + 50;
+    expiryBlockNumber = block.number + 5000;
 
     emit LastSenderUpdated(lastSender, expiryBlockNumber, address(this).balance);
   }

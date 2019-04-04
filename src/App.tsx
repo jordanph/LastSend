@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Connected from "./Connected";
+import NotConnected from "./NotConnected";
 import styled from "styled-components";
 import Paper from "@material-ui/core/Paper";
 import { Typography, Grid } from "@material-ui/core";
@@ -25,7 +26,7 @@ class App extends Component {
       <CenteredDiv>
         <Grid container direction="row" justify="center" alignItems="center">
           <MainGame>
-            {!window.connex && <div>Use sync!</div>}
+            {!window.connex && <NotConnected />}
             {window.connex && <Connected />}
           </MainGame>
         </Grid>
@@ -36,7 +37,7 @@ class App extends Component {
             pot when the block counter reaches 0
           </Typography>
           <Typography variant="subtitle2">
-            The game starts out with 0 VET and an endtime of 1000 blocks
+            The game starts out with 0 VET and an endtime of 5000 blocks
           </Typography>
           <Typography variant="subtitle2">
             Everytime a person sends to the contract, the amount is added to the
@@ -47,8 +48,8 @@ class App extends Component {
             win!
           </Typography>
           <Typography variant="subtitle2">
-            However, be warned, the block counter is reset to 1000 everytime
-            someone send their VET!
+            However, be warned, the block counter is reset to 5000 everytime
+            someone sends their VET!
           </Typography>
         </MarginedPaper>
       </CenteredDiv>

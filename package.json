@@ -19,8 +19,8 @@
     "typescript": "^3.4.1"
   },
   "scripts": {
-    "start": "REACT_APP_CONTRACT_ADDRESS=0xd1c5f149931A8A57e3db7789073e0496992bfbcF react-scripts start",
-    "build": "react-scripts build",
+    "start": "REACT_APP_CONTRACT_ADDRESS=0x438CdCd1a640926B339beaF5461c7D1Ea8e2fBeF react-scripts start",
+    "build": "REACT_APP_CONTRACT_ADDRESS=0x438CdCd1a640926B339beaF5461c7D1Ea8e2fBeF react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
