@@ -16,24 +16,28 @@ const NotConnected = () => {
       <Grid container spacing={24}>
         <Grid item xs={6}>
           <Paper style={{ padding: 5 }}>
-            <img
-              src={sync}
-              style={{ height: 150, marginBottom: 10 }}
-              alt="Sync"
-            />
-            <br />
-            <Link href={"https://env.vechain.org/#sync"}>Sync</Link>
+            <Link href={"https://env.vechain.org/#sync"}>
+              <img
+                src={sync}
+                style={{ height: 150, marginBottom: 10 }}
+                alt="Sync"
+              />
+              <br />
+              Sync
+            </Link>
           </Paper>
         </Grid>
         <Grid item xs={6}>
           <Paper style={{ padding: 5 }}>
-            <img
-              src={comet}
-              style={{ height: 150, marginBottom: 10 }}
-              alt="Comet"
-            />
-            <br />
-            <Link href={"https://www.cometpowered.com/"}>Comet</Link>
+            <Link href={"https://www.cometpowered.com/"}>
+              <img
+                src={comet}
+                style={{ height: 150, marginBottom: 10 }}
+                alt="Comet"
+              />
+              <br />
+              Comet
+            </Link>
           </Paper>
         </Grid>
       </Grid>

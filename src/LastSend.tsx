@@ -51,6 +51,21 @@ const expiryBlockNumberABI = {
   signature: "0xc9f89ea5"
 };
 
+const finalBalanceABI = {
+  constant: true,
+  inputs: [],
+  name: "finalBalance",
+  outputs: [
+    {
+      name: "",
+      type: "uint256"
+    }
+  ],
+  payable: false,
+  stateMutability: "view",
+  type: "function"
+};
+
 const account = process.env.REACT_APP_CONTRACT_ADDRESS!;
 
 interface LastSendProps {
@@ -85,12 +100,28 @@ const LastSend: FunctionComponent<LastSendProps> = ({ currentBlock }) => {
         .call();
       const balance = await connex.thor.account(account).get();
       const currentWinnerAddress = currentWinner.decoded!["0"]!;
+      const ended = expiryBlock.decoded!["0"]! <= currentBlock;
+
+      const getFinalBalance = async (gameEnded: boolean) => {
+        if (gameEnded) {
+          const final = await connex.thor
+            .account(account)
+            .method(finalBalanceABI)
+            .call();
+
+          return parseInt(final.decoded!["0"]!) / 1000000000000000000;
+        } else {
+          return parseInt(balance.balance, 16) / 1000000000000000000;
+        }
+      };
+
+      const finalBalance = await getFinalBalance(ended);
 
       setCurrentDetails({
         currentWinner: currentWinnerAddress,
         expiryBlock: parseInt(expiryBlock.data, 16),
-        ended: expiryBlock.decoded!["0"]! <= currentBlock,
-        balance: parseInt(balance.balance, 16) / 1000000000000000000,
+        ended: ended,
+        balance: finalBalance,
         isCurrentWinner: connex.vendor.owned(currentWinnerAddress),
         claimed: claimed.decoded!["0"]!
       });
